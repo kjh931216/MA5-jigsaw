@@ -194,11 +194,12 @@ bool ATLAS_SUSY_2018_06::Execute(SampleFormat& sample, const EventFormat& event)
   MAdouble64 mll = (SignalLeptons[PairLeptons[0]]->momentum()+SignalLeptons[PairLeptons[1]]->momentum()).M();
   if(!Manager()->ApplyCut(75. <= mll && mll <= 105.,"Dilepton InvMass")) return true;
 
+  
+  /////// LOW-region ///////
+  
   //Number of jets
   int Jet_size = Jets.size();
   if(!Manager()->ApplyCut(Jet_size==0,"low-Jet-veto")) return true;
-  if(!Manager()->ApplyCut(Jet_size>0,"ISR-Njet > 0")) return true;
-  if(!Manager()->ApplyCut(Jet_size<4,"ISR-Njet < 4")) return true;
 
   //low HBoost
   MAdouble64 HBoost = GetHBoost(SignalLeptons,MET);
@@ -215,6 +216,12 @@ bool ATLAS_SUSY_2018_06::Execute(SampleFormat& sample, const EventFormat& event)
   if(!Manager()->ApplyCut(meff/HBoost > 0.9,"low-Meff/HBoost")) return true;
   
 
+  /////// ISR-region ///////
+  
+  //Number of jets
+  if(!Manager()->ApplyCut(Jet_size>0,"ISR-Njet > 0")) return true;
+  if(!Manager()->ApplyCut(Jet_size<4,"ISR-Njet < 4")) return true;  
+  
   //ISR Delta Phi between MET and Jets
   MALorentzVector Jets_momentum;
   for(int i=0;i<Jet_size;i++)
@@ -366,4 +373,5 @@ MAdouble64 GetHBoost(vector<const RecLeptonFormat*> leptons,const RecParticleFor
 
   return HBoost;
 }
+
 
