@@ -25,13 +25,13 @@ i.e. Build/SampleAnalyzer/User/Analyzer/
   -->
   
   
-  <region type="signal" id="SR_ISR_cutflow">
+  <region type="signal" id="SR_ISR">
     <nobs>30</nobs>
     <nb>23.4</nb>
     <deltanb>2.1</deltanb>
   </region>
   
-  <region type="signal" id="SR-low-cutflow">
+  <region type="signal" id="SR_low">
     <nobs>51</nobs>
     <nb>46</nb>
     <deltanb>5</deltanb>
