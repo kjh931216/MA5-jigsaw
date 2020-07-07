@@ -35,7 +35,11 @@ bool atlas_susy_2018_06::Initialize(const MA5::Configuration& cfg, const std::ma
   INFO << "      <>   /PhysicsAnalysisDatabase                         <>" << endmsg;
   INFO << "      <><><><><><><><><><><><><><><><><><><><><><><><><><><><>" << endmsg;
 
+
   //Add Signal Region
+
+
+  //Signal Region for Cutflows
   Manager()->AddRegionSelection("SR_low");
   Manager()->AddRegionSelection("SR_ISR");
   
@@ -61,6 +65,80 @@ bool atlas_susy_2018_06::Initialize(const MA5::Configuration& cfg, const std::ma
   Manager()->AddCut("ISR-MET > 80","SR_ISR");
   Manager()->AddCut("Transverse Mass");
   Manager()->AddCut("ISR-PTsoft < 25","SR_ISR");
+
+//For diagrams. If you want to draw diagrams, uncomment the paragraph below and the last part of Execute and comment the paragraph above.
+/*
+  //Signal Region for diagrams
+  Manager()->AddRegionSelection("SR_low");
+  Manager()->AddRegionSelection("SR_ISR");
+  Manager()->AddRegionSelection("SR-low-MT");
+  Manager()->AddRegionSelection("SR-low-HBoost");
+  Manager()->AddRegionSelection("SR-low-R(Meff,HBoost)");
+  Manager()->AddRegionSelection("SR-low-R(PTsoft,(PTsoft+Meff))");
+
+  Manager()->AddRegionSelection("SR-ISR-MT");
+  Manager()->AddRegionSelection("SR-ISR-R(MET,Jets)");
+  Manager()->AddRegionSelection("SR-ISR-PTsoft");
+  Manager()->AddRegionSelection("SR-ISR-PTjets");
+
+  std::string SR_low[] = {"SR_low","SR-low-MT","SR-low-HBoost","SR-low-R(Meff,HBoost)","SR-low-R(PTsoft,(PTsoft+Meff))"};
+  std::string SR_low_HBoost[] = {"SR_low","SR-low-MT","SR-low-R(Meff,HBoost)","SR-low-R(PTsoft,(PTsoft+Meff))"};
+  std::string SR_low_R_Meff_HBoost[] = {"SR_low","SR-low-MT","SR-low-HBoost","SR-low-R(PTsoft,(PTsoft+Meff))"};
+  std::string SR_low_R_PTsoft_Meff[] = {"SR_low","SR-low-MT","SR-low-HBoost","SR-low-R(Meff,HBoost)"};
+
+  std::string SR_ISR[] = {"SR_ISR","SR-ISR-MT","SR-ISR-R(MET,Jets)","SR-ISR-PTsoft","SR-ISR-PTjets"};
+  std::string SR_ISR_R_MET_Jets[] = {"SR_ISR","SR-ISR-MT","SR-ISR-PTsoft","SR-ISR-PTjets"};
+  std::string SR_ISR_PTsoft[] = {"SR_ISR","SR-ISR-MT","SR-ISR-R(MET,Jets)","SR-ISR-PTjets"};
+  std::string SR_ISR_PTjets[] = {"SR_ISR","SR-ISR-MT","SR-ISR-R(MET,Jets)","SR-ISR-PTsoft"};
+
+  std::string SR_MT[] = {"SR_low","SR-low-HBoost","SR-low-R(Meff,HBoost)","SR-low-R(PTsoft,(PTsoft+Meff))"
+                        ,"SR_ISR","SR-ISR-R(MET,Jets)","SR-ISR-PTsoft","SR-ISR-PTjets"};
+
+
+  Manager()->AddCut("3Leptons");                              // Exact three leptons
+  Manager()->AddCut("SFOS");                                  // Same flavor, opposite-charge pair
+  //Manager()->AddCut("Dilepton Trigger");
+  Manager()->AddCut("B-veto");                                // b-jet veto
+  Manager()->AddCut("Three Lepton Mass");                     // Invariant mass of three leptons system
+  Manager()->AddCut("low-LeptonPT > 60, 40, 30",SR_low);
+  Manager()->AddCut("ISR-LeptonPT > 25, 25, 20",SR_ISR);
+  Manager()->AddCut("Dilepton InvMass");                      // Invariant mass of SFOS pair
+
+  Manager()->AddCut("low-Jet-veto",SR_low);
+  Manager()->AddCut("low-HBoost",SR_low_HBoost);
+  Manager()->AddCut("low-PTsoft/(PTsoft+Meff)",SR_low_R_PTsoft_Meff);
+  Manager()->AddCut("low-Meff/HBoost",SR_low_R_Meff_HBoost);
+
+  Manager()->AddCut("ISR-Njet > 0",SR_ISR);
+  Manager()->AddCut("ISR-Njet < 4",SR_ISR);
+  Manager()->AddCut("ISR-DeltaPhi(MET,Jets) > 2.0",SR_ISR);
+  Manager()->AddCut("ISR-R(MET,Jets)",SR_ISR_R_MET_Jets);
+  Manager()->AddCut("ISR-JetsPT > 100",SR_ISR_PTjets);
+  Manager()->AddCut("ISR-MET > 80",SR_ISR);
+  Manager()->AddCut("Transverse Mass",SR_MT);
+  Manager()->AddCut("ISR-PTsoft < 25",SR_ISR_PTsoft);
+
+
+  Manager()->AddHisto("SR-low-MT",20,0,500,"SR-low-MT");
+  Manager()->AddHisto("SR-low-HBoost",20,200,700,"SR-low-HBoost");
+  Manager()->AddHisto("SR-low-R(Meff,HBoost)",15,0.3,1.05,"SR-low-R(Meff,HBoost)");
+  Manager()->AddHisto("SR-low-R(PTsoft,(PTsoft+Meff))",15,0,0.15,"SR-low-R(PTsoft,(PTsoft+Meff))");
+  
+  Manager()->AddHisto("SR-ISR-MT",50,0,500,"SR-ISR-MT");
+  Manager()->AddHisto("SR-ISR-R(MET,Jets)",18,0.1,1,"SR-ISR-R(MET,Jets)");
+  Manager()->AddHisto("SR-ISR-PTsoft",20,0,100,"SR-ISR-PTsoft");
+  Manager()->AddHisto("SR-ISR-PTjets",18,0,500,"SR-ISR-PTjets");
+
+  //Auxiliery figure
+  Manager()->AddHisto("SR-low-PTlep1",17,60,400,"SR_low");
+  Manager()->AddHisto("SR-low-PTlep2",13,40,300,"SR_low");
+  Manager()->AddHisto("SR-low-PTlep3",12,30,150,"SR_low");
+  Manager()->AddHisto("SR-low-MET",20,0,500,"SR_low");
+  Manager()->AddHisto("SR-ISR-PTlep1",10,25,225,"SR_ISR");
+  Manager()->AddHisto("SR-ISR-PTlep2",15,25,175,"SR_ISR");
+  Manager()->AddHisto("SR-ISR-PTlep3",8,20,100,"SR_ISR");
+*/
+
 
   cout << "END   Initialization" << endl;
   return true;
@@ -236,7 +314,6 @@ bool atlas_susy_2018_06::Execute(SampleFormat& sample, const EventFormat& event)
 
   if(!Manager()->ApplyCut(0.55<=R_MET_Jets && R_MET_Jets <= 1.,"ISR-R(MET,Jets)")) return true;
 
-  
   //PT jet
   bool ISR_JetPT = (Jets_momentum.Pt() > 100.);
   if(!Manager()->ApplyCut(ISR_JetPT,"ISR-JetsPT > 100")) return true;
@@ -255,6 +332,30 @@ bool atlas_susy_2018_06::Execute(SampleFormat& sample, const EventFormat& event)
   MAdouble64 ISR_PTsoft = (ThreeLeptonsSystem+Jets_momentum+MET->momentum()).Pt();
   
   if(!Manager()->ApplyCut(ISR_PTsoft<25.,"ISR-PTsoft < 25")) return true;
+
+  //For diagrams, If you want to draw, uncomment the paragraph below
+
+  //Fill Histogram
+/*
+  Manager()->FillHisto("SR-low-MT",MT);
+  Manager()->FillHisto("SR-low-HBoost",HBoost);
+  Manager()->FillHisto("SR-low-R(Meff,HBoost)",(meff/HBoost));
+  Manager()->FillHisto("SR-low-R(PTsoft,(PTsoft+Meff))",R_PTsoft);
+  
+  Manager()->FillHisto("SR-ISR-MT",MT);
+  Manager()->FillHisto("SR-ISR-R(MET,Jets)",R_MET_Jets);
+  Manager()->FillHisto("SR-ISR-PTsoft",ISR_PTsoft);
+  Manager()->FillHisto("SR-ISR-PTjets",Jets_momentum.Pt());
+
+
+  Manager()->FillHisto("SR-low-PTlep1",SignalLeptons[0]->pt());
+  Manager()->FillHisto("SR-low-PTlep2",SignalLeptons[1]->pt());
+  Manager()->FillHisto("SR-low-PTlep3",SignalLeptons[2]->pt());
+  Manager()->FillHisto("SR-low-MET",MET->pt());
+  Manager()->FillHisto("SR-ISR-PTlep1",SignalLeptons[0]->pt());
+  Manager()->FillHisto("SR-ISR-PTlep2",SignalLeptons[1]->pt());
+  Manager()->FillHisto("SR-ISR-PTlep3",SignalLeptons[2]->pt());
+*/
   
   return true; // end of anlaysis
 }
@@ -352,6 +453,7 @@ MAdouble64 atlas_susy_2018_06_func::GetHBoost(vector<const RecLeptonFormat*> lep
   
   MAdouble64 Missing_E = sqrt(pow(missing->pt(),2)+pow(Missing_Pz,2));
   MALorentzVector MissingMomentum(missing->px(),missing->py(),Missing_Pz,Missing_E);
+  //cout<<MissingMomentum.M()<<endl;
   MAdouble64 ETotal = LeptonsMomentum.E()+MissingMomentum.P();
 
   MAdouble64 Boost_x = (LeptonsMomentum.Px()+MissingMomentum.Px())/ETotal;
@@ -371,5 +473,3 @@ MAdouble64 atlas_susy_2018_06_func::GetHBoost(vector<const RecLeptonFormat*> lep
 
   return HBoost;
 }
-
-
